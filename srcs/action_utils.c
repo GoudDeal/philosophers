@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/12 13:10:45 by dcyprien          #+#    #+#             */
-/*   Updated: 2022/02/21 15:38:30 by user42           ###   ########.fr       */
+/*   Updated: 2022/02/21 15:58:22 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,24 @@ void	set_all_dead(t_philo *philo)
 
 void	philo_output(t_philo *philo, char *msg)
 {
-	pthread_mutex_lock(philo->lock_output);
+		long	timecurr;
+	
 	pthread_mutex_lock(philo->var);
+	timecurr = time_passed(*philo->time_last_meal, 1);
+	if (timecurr > philo->time_to_die && philo->status.all_alive != 0)
+	{
+		pthread_mutex_unlock(philo->var);
+		philo_dies(philo);
+		set_all_dead(philo);
+		return ;
+	}
 	if (philo->status.all_alive == 0 || philo->done)
 	{
 		pthread_mutex_unlock(philo->var);
 		pthread_mutex_unlock(philo->lock_output);
 		return ;
 	}
+	pthread_mutex_lock(philo->lock_output);
 	pthread_mutex_unlock(philo->var);
 	printf("%s%ld %s%d %s%s%s\n", BLUE, time_passed(*philo->status
 			.starting_time, 1), RED, philo->number, WHITE, msg, RESET);
