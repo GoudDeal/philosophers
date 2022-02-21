@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 19:32:25 by dcyprien          #+#    #+#             */
-/*   Updated: 2022/02/21 15:24:36 by user42           ###   ########.fr       */
+/*   Updated: 2022/02/21 16:07:42 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,29 @@ void	philo_takes_forks_odd(t_philo *philo)
 		lock_fork_odd(philo);
 	}
 	pthread_mutex_unlock(philo->var);
+}
+
+void	philo_takes_forks(t_philo *philo)
+{
+	int	num;
+
+	num = get_num_philo(philo);
+	// pthread_mutex_lock(philo->var);
+	if (num % 2 != 0)
+	{
+		pthread_mutex_unlock(philo->var);
+		philo_takes_forks_odd(philo);
+		return ;
+	}
+	if (philo->number % 2 == 0 && philo->number != num)
+		lock_fork_even(philo);
+	else if (philo->number % 2 != 0)
+	{
+		if (philo->number != num)
+			lock_fork_odd(philo);
+	}
+	if (philo->number == num)
+	{
+		lock_fork_even(philo);
+	}
 }

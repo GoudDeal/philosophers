@@ -6,7 +6,7 @@
 /*   By: user42 <user42@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/04 16:07:31 by dcyprien          #+#    #+#             */
-/*   Updated: 2022/02/21 14:29:29 by user42           ###   ########.fr       */
+/*   Updated: 2022/02/21 16:08:47 by user42           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,13 @@ void	philo_thinks(t_philo *philo)
 	pthread_mutex_unlock(philo->var);
 	philo_output(philo, "is thinking");
 	update_action(philo, EAT);
+	pthread_mutex_lock(philo->var);
+	if (philo->time_to_sleep < philo->time_to_eat && philo->number % 2 != 0)
+	{
+		pthread_mutex_unlock(philo->var);
+		sleeps(philo, (philo->time_to_eat - philo->time_to_sleep) + 1);
+	}
+	pthread_mutex_unlock(philo->var);
 }
 
 void	philo_eats(t_philo *philo)
